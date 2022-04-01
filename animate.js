@@ -40,7 +40,7 @@ class CreatePattern {
                 sc -= 0.1
                 x = trans(x, polePositiveNegative[0], dd[0]);
                 y = trans(y, polePositiveNegative[1], dd[1]);
-                this.initialStyles.style.transform = `translate(${trans(x, polePositiveNegative[0], dd[0])}px,${trans(y, polePositiveNegative[1], dd[1])}px) scale(0)`
+                this.initialStyles.style.transform = `translate(${x}px,${y}px) scale(0)`
             }
         }, 99);
     }
