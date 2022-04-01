@@ -53,11 +53,9 @@ function mFmR(value) {
 //调色盘
 const presetColor = { palette: ["#f9f383", "#eb125f", "#6eff8a", "#66ffff"] }
 
-// function creatPatternGroup(){}
-
-function produceStyle(x, y) {
+function produceStyle(pattern, x, y) {
     let produce = new CreatePattern()
-    produce.growUp('aixin', x, y)
+    produce.growUp(pattern, x, y)
     produce.dynamic()
 }
 
@@ -65,6 +63,6 @@ let abc = document.querySelector('.abc')
 
 document.addEventListener('click', function (e) {
     for (let i = 0; i < 10; i++) {
-        produceStyle(e.pageX, e.pageY)
+        produceStyle('aixin', e.pageX, e.pageY)
     }
 })
