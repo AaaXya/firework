@@ -1,68 +1,63 @@
 class CreatePattern {
-    constructor() {
-        this.color = presetColor.palette[mFmR(presetColor.palette.length)]
-        this.initialStyles = document.createElement('i')
+    constructor(el, x, y, config = {}) {
+        this.root = el
+        this.x = x
+        this.y = y
+        this.options = {
+            ...{
+                type: 'aixin', //class属性名
+                quantity: 10, //数量
+                distanceMax: 100, //移动最大距离px
+                distanceMin: 20,
+                palette: ['f9f383', 'eb125f', '6eff8a', '66ffff'], //调色盘
+            },
+            ...config,
+        }
+        this.openSwing = () =>
+            (Math.random() < 0.5 ? -1 : 1) *
+            //[n,m] 范围随机数 Math.floor(Math.random() * (m - n + 1)) + n;
+            (this.mFmR(this.options.distanceMax - this.options.distanceMin + 1) +
+                this.options.distanceMin)
+        this.growUp()
     }
 
-    //添加class
-    growUp(pattern, x, y) {
-        this.initialStyles.classList.add(pattern)
-        this.initialStyles.style.cssText = `background-color:${this.color};left:${x}px;top:${y}px;z-index:999`
-        abc.append(this.initialStyles)
+    //添加属性
+    giveBirthToAChild() {
+        const initialStyles = document.createElement('i')
+        initialStyles.style.cssText = `background-color:#${
+            this.options.palette[this.mFmR(this.options.palette.length)]
+        };left:${this.x}px;top:${this.y}px;z-index:999`
+        this.root.append(initialStyles)
+        initialStyles.classList.add(this.options.type)
+        this.dynamic(initialStyles)
+    }
+
+    growUp() {
+        for (let i = 0; i < this.options.quantity; i++) this.giveBirthToAChild()
+    }
+
+    mFmR(v) {
+        return Math.floor(Math.random() * v)
     }
 
     //随机散开
-    dynamic() {
-        let sc = 1, x = 0, y = 0
+    dynamic(x) {
+        setTimeout(() => {
+            x.style.transform = `translate(${this.openSwing()}px,${this.openSwing()}px) scale(0)`
+        })
 
-        function trans(a, b, c) {
-            if (b) {
-                a -= c
-            } else {
-                a += c
-            }
-            return a
-        }
-        //骰子
-        let dice = function (a, b) {
-            return a < 6 && b < 6 ? dice(mFmR(20), mFmR(20)) : [a, b]
-        }
-        let dd = dice(mFmR(20), mFmR(20));
-
-        let polePositiveNegative = [mFmR(2), mFmR(2)]
-
-        let animating = setInterval(() => {
-            //sc归零动画结束
-            if (sc <= 0) {
-                clearInterval(animating)
-                this.initialStyles.remove()
-            } else {
-                sc -= 0.1
-                x = trans(x, polePositiveNegative[0], dd[0]);
-                y = trans(y, polePositiveNegative[1], dd[1]);
-                this.initialStyles.style.transform = `translate(${x}px,${y}px) scale(0)`
-            }
-        }, 99);
+        setTimeout(() => {
+            x.remove()
+        }, 700)
     }
 }
 
-function mFmR(value) {
-    return Math.floor(Math.random() * value)
-}
+const el = document.createElement('div')
 
-//调色盘
-const presetColor = { palette: ["#f9f383", "#eb125f", "#6eff8a", "#66ffff"] }
+addEventListener('load', () => {
+    document.body.append(el)
 
-function produceStyle(pattern, x, y) {
-    let produce = new CreatePattern()
-    produce.growUp(pattern, x, y)
-    produce.dynamic()
-}
-
-let abc = document.querySelector('.abc')
-
-document.addEventListener('click', function (e) {
-    for (let i = 0; i < 10; i++) {
-        produceStyle('aixin', e.pageX, e.pageY)
-    }
+    document.addEventListener('click', function (e) {
+        new CreatePattern(el, e.pageX, e.pageY)
+    })
 })
